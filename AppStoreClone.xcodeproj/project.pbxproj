@@ -16,6 +16,8 @@
 		728AD5AC28A4D42000F0373B /* AppStoreCloneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728AD5AB28A4D42000F0373B /* AppStoreCloneTests.swift */; };
 		728AD5B628A4D42000F0373B /* AppStoreCloneUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728AD5B528A4D42000F0373B /* AppStoreCloneUITests.swift */; };
 		728AD5B828A4D42000F0373B /* AppStoreCloneUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728AD5B728A4D42000F0373B /* AppStoreCloneUITestsLaunchTests.swift */; };
+		728AD5C928A4D9A600F0373B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728AD5C828A4D9A600F0373B /* LoginView.swift */; };
+		728AD5CC28A4DC3E00F0373B /* Extension+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728AD5CB28A4DC3E00F0373B /* Extension+.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,8 @@
 		728AD5B128A4D42000F0373B /* AppStoreCloneUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppStoreCloneUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		728AD5B528A4D42000F0373B /* AppStoreCloneUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreCloneUITests.swift; sourceTree = "<group>"; };
 		728AD5B728A4D42000F0373B /* AppStoreCloneUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreCloneUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		728AD5C828A4D9A600F0373B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		728AD5CB28A4DC3E00F0373B /* Extension+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +103,8 @@
 		728AD59328A4D41B00F0373B /* AppStoreClone */ = {
 			isa = PBXGroup;
 			children = (
+				728AD5CA28A4DC3400F0373B /* extension */,
+				728AD5C728A4D99D00F0373B /* login */,
 				728AD59428A4D41B00F0373B /* AppDelegate.swift */,
 				728AD59628A4D41B00F0373B /* SceneDelegate.swift */,
 				728AD59828A4D41B00F0373B /* ViewController.swift */,
@@ -125,6 +131,22 @@
 				728AD5B728A4D42000F0373B /* AppStoreCloneUITestsLaunchTests.swift */,
 			);
 			path = AppStoreCloneUITests;
+			sourceTree = "<group>";
+		};
+		728AD5C728A4D99D00F0373B /* login */ = {
+			isa = PBXGroup;
+			children = (
+				728AD5C828A4D9A600F0373B /* LoginView.swift */,
+			);
+			path = login;
+			sourceTree = "<group>";
+		};
+		728AD5CA28A4DC3400F0373B /* extension */ = {
+			isa = PBXGroup;
+			children = (
+				728AD5CB28A4DC3E00F0373B /* Extension+.swift */,
+			);
+			path = extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,7 +281,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				728AD59928A4D41B00F0373B /* ViewController.swift in Sources */,
+				728AD5CC28A4DC3E00F0373B /* Extension+.swift in Sources */,
 				728AD59528A4D41B00F0373B /* AppDelegate.swift in Sources */,
+				728AD5C928A4D9A600F0373B /* LoginView.swift in Sources */,
 				728AD59728A4D41B00F0373B /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
