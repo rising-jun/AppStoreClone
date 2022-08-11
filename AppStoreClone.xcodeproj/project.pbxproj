@@ -13,8 +13,6 @@
 		728AD59E28A4D41F00F0373B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 728AD59D28A4D41F00F0373B /* Assets.xcassets */; };
 		728AD5A128A4D41F00F0373B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 728AD59F28A4D41F00F0373B /* LaunchScreen.storyboard */; };
 		728AD5AC28A4D42000F0373B /* AppStoreCloneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728AD5AB28A4D42000F0373B /* AppStoreCloneTests.swift */; };
-		728AD5B628A4D42000F0373B /* AppStoreCloneUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728AD5B528A4D42000F0373B /* AppStoreCloneUITests.swift */; };
-		728AD5B828A4D42000F0373B /* AppStoreCloneUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728AD5B728A4D42000F0373B /* AppStoreCloneUITestsLaunchTests.swift */; };
 		728AD5CC28A4DC3E00F0373B /* Extension+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728AD5CB28A4DC3E00F0373B /* Extension+.swift */; };
 		728AD5CE28A4E40E00F0373B /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728AD5CD28A4E40E00F0373B /* LoginViewModel.swift */; };
 		728AD5D428A4E73A00F0373B /* AppStoreAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728AD5D328A4E73A00F0373B /* AppStoreAPI.swift */; };
@@ -51,8 +49,6 @@
 		728AD5A728A4D42000F0373B /* AppStoreCloneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppStoreCloneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		728AD5AB28A4D42000F0373B /* AppStoreCloneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreCloneTests.swift; sourceTree = "<group>"; };
 		728AD5B128A4D42000F0373B /* AppStoreCloneUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppStoreCloneUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		728AD5B528A4D42000F0373B /* AppStoreCloneUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreCloneUITests.swift; sourceTree = "<group>"; };
-		728AD5B728A4D42000F0373B /* AppStoreCloneUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreCloneUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		728AD5CB28A4DC3E00F0373B /* Extension+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+.swift"; sourceTree = "<group>"; };
 		728AD5CD28A4E40E00F0373B /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		728AD5D328A4E73A00F0373B /* AppStoreAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreAPI.swift; sourceTree = "<group>"; };
@@ -91,7 +87,6 @@
 			children = (
 				728AD59328A4D41B00F0373B /* AppStoreClone */,
 				728AD5AA28A4D42000F0373B /* AppStoreCloneTests */,
-				728AD5B428A4D42000F0373B /* AppStoreCloneUITests */,
 				728AD59228A4D41B00F0373B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -129,15 +124,6 @@
 				728AD5AB28A4D42000F0373B /* AppStoreCloneTests.swift */,
 			);
 			path = AppStoreCloneTests;
-			sourceTree = "<group>";
-		};
-		728AD5B428A4D42000F0373B /* AppStoreCloneUITests */ = {
-			isa = PBXGroup;
-			children = (
-				728AD5B528A4D42000F0373B /* AppStoreCloneUITests.swift */,
-				728AD5B728A4D42000F0373B /* AppStoreCloneUITestsLaunchTests.swift */,
-			);
-			path = AppStoreCloneUITests;
 			sourceTree = "<group>";
 		};
 		728AD5C728A4D99D00F0373B /* login */ = {
@@ -344,8 +330,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				728AD5B828A4D42000F0373B /* AppStoreCloneUITestsLaunchTests.swift in Sources */,
-				728AD5B628A4D42000F0373B /* AppStoreCloneUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
