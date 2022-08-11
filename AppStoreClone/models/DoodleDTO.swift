@@ -8,10 +8,10 @@ import Foundation
 
 struct DoodleDTO: Codable {
     let resultCount: Int
-    let results: [ResultDTO]
+    let results: [DetailDTO]
 }
 
-struct ResultDTO: Codable {
+struct DetailDTO: Codable {
     let isGameCenterEnabled: Bool
     let supportedDevices: [String]
     let advisories, features: [String]
@@ -60,5 +60,26 @@ struct ResultDTO: Codable {
         case artistID = "artistId"
         case artistName, genres, price, version, wrapperType, userRatingCount
     }
+    
+    func convertTitleEntity() -> TitleEntity {
+        return TitleEntity(title: trackName, subTitle: artistName, imageURL: artworkUrl512)
+    }
 }
 
+
+final class TitleEntity {
+    let title: String
+    let subTitle: String
+    let imageURL: String
+    private(set) var imageData: Data?
+    
+    func setImage(data: Data) {
+        imageData = data
+    }
+    
+    init(title: String, subTitle: String, imageURL: String) {
+        self.title = title
+        self.subTitle = subTitle
+        self.imageURL = imageURL
+    }
+}

@@ -34,8 +34,6 @@ final class LoginViewController: UIViewController {
         return button
     }()
     
-    private var toastView = ToastView()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         attribute()
@@ -64,14 +62,18 @@ extension LoginViewController {
     }
     
     private func bind() {
-        viewModel.fetchSuccess = { doodleDTO in
+        viewModel.fetchSuccess = { [weak self] doodleDTO in
+            guard let self = self else { return }
             DispatchQueue.main.async {
-                self.showToast(message: "찾았습니다.", font: UIFont.systemFont(ofSize: 20))
+                let detailViewController = DetailViewController()
+                guard let detailDTO = doodleDTO.results.first else { return }
+                detailViewController.viewModel.setDetailDTO(detailDTO)
+                detailViewController.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(detailViewController, animated: true)
             }
         }
         
-        viewModel.fetchFailed = { [weak self] in
-            guard let self = self else { return }
+        viewModel.fetchFailed = {
             DispatchQueue.main.async {
                 self.showToast(message: "검색결과가 없습니다.", font: UIFont.systemFont(ofSize: 20))
             }
