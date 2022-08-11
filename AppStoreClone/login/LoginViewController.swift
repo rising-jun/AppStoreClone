@@ -1,5 +1,5 @@
 //
-//  LoginView.swift
+//  ViewController.swift
 //  AppStoreClone
 //
 //  Created by 김동준 on 2022/08/11.
@@ -7,9 +7,11 @@
 
 import UIKit
 
-final class LoginView: UIView {
+final class LoginViewController: UIViewController {
     
-    var idTextField: UITextField = {
+    private let viewModel = LoginViewModel()
+    
+    private var idTextField: UITextField = {
         let textField = UITextField()
         let centeredParagraphStyle = NSMutableParagraphStyle()
         centeredParagraphStyle.alignment = .center
@@ -23,7 +25,7 @@ final class LoginView: UIView {
         return textField
     }()
     
-    var checkButton: UIButton = {
+    private var checkButton: UIButton = {
         let button = UIButton()
         button.setTitle("검색하기", for: .normal)
         button.backgroundColor = .gray
@@ -32,33 +34,37 @@ final class LoginView: UIView {
         return button
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         attribute()
         layout()
+        bind()
     }
-    
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-    
+}
+extension LoginViewController {
     private func attribute() {
-        backgroundColor = .white
+        view.backgroundColor = .white
     }
     
     private func layout() {
-        addSubviews(idTextField, checkButton)
+        view.addSubviews(idTextField, checkButton)
         
-        NSLayoutConstraint.activate( [idTextField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
-                                      idTextField.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+        NSLayoutConstraint.activate( [idTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+                                      idTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor),
                                       idTextField.widthAnchor.constraint(equalToConstant: 250),
                                       idTextField.heightAnchor.constraint(equalToConstant: 50)])
         
-        NSLayoutConstraint.activate( [checkButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-                                      checkButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
+        NSLayoutConstraint.activate( [checkButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                                      checkButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
                                       checkButton.widthAnchor.constraint(equalToConstant: 80),
                                       checkButton.heightAnchor.constraint(equalToConstant: 50)])
     }
+    
+    private func bind() {
+        checkButton.addTarget(self, action: #selector(checkButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc func checkButtonTapped(sender: Any) {
+        viewModel.checkButtonTapped(id: idTextField.text ?? "")
+    }
 }
-
