@@ -71,6 +71,12 @@ final class TitleCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+    
+    override func prepareForReuse() {
+        titleLabel.text = nil
+        subTitleLabel.text = nil
+        imageView.image = nil
+    }
 }
 extension TitleCell {
     private func layout() {

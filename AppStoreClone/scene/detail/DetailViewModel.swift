@@ -10,8 +10,9 @@ import OSLog
 
 final class DetailViewModel {
     private let imageManager = ImageManager()
-    var titleImageFetched: (() -> ())?
+    private let dateManager = DateManager()
     
+    var titleImageFetched: (() -> ())?
     private(set) var titleEntity: TitleEntity? {
         didSet {
             guard let titleEntity = titleEntity else { return }
@@ -27,8 +28,15 @@ final class DetailViewModel {
         }
     }
     
+    private(set) var newFeatureEntity: NewFeatureEntity? {
+        didSet {
+            let dateGap = dateManager.findDateGap(date: newFeatureEntity?.currentVersionDate ?? "")
+            newFeatureEntity?.setCurrentVersionDate(dateGap)
+        }
+    }
+    
     func setDetailDTO(_ detailDTO: DetailDTO) {
         self.titleEntity = detailDTO.convertTitleEntity()
-        
+        self.newFeatureEntity = detailDTO.convertNewFeatureEntity()
     }
 }

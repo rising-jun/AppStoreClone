@@ -64,6 +64,10 @@ struct DetailDTO: Codable {
     func convertTitleEntity() -> TitleEntity {
         return TitleEntity(title: trackName, subTitle: artistName, imageURL: artworkUrl512)
     }
+    
+    func convertNewFeatureEntity() -> NewFeatureEntity {
+        return NewFeatureEntity(version: version, currentVersionDate: currentVersionReleaseDate, releaseNotes: releaseNotes)
+    }
 }
 
 
@@ -81,5 +85,21 @@ final class TitleEntity {
         self.title = title
         self.subTitle = subTitle
         self.imageURL = imageURL
+    }
+}
+
+final class NewFeatureEntity {
+    let version: String
+    private(set) var currentVersionDate: String
+    let releaseNotes: String
+    
+    init(version: String, currentVersionDate: String, releaseNotes: String) {
+        self.version = "버전 \(version)"
+        self.currentVersionDate = currentVersionDate
+        self.releaseNotes = releaseNotes
+    }
+    
+    func setCurrentVersionDate(_ date: String) {
+        self.currentVersionDate = "\(date) 전"
     }
 }

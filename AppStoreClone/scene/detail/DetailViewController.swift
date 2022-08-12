@@ -26,6 +26,7 @@ final class DetailViewController: UIViewController {
         collectionView.backgroundColor = .black
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(TitleCell.self, forCellWithReuseIdentifier: TitleCell.id)
+        collectionView.register(NewFeatureCell.self, forCellWithReuseIdentifier: NewFeatureCell.id)
         return collectionView
     }()
     
@@ -44,7 +45,8 @@ extension DetailViewController {
     
     private func attribute() {
         collectionView.dataSource = dataSource
-        dataSource.setDetailDTO(viewModel.titleEntity)
+        dataSource.setTitleEntity(viewModel.titleEntity)
+        dataSource.setNewFeatureEntity(viewModel.newFeatureEntity)
     }
     
     private func bind() {
@@ -65,7 +67,15 @@ enum CompositionalLayoutFactory {
             case .title:
                 let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.45)))
                 item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(1)), subitems: [item])
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.45)), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+                section.orthogonalScrollingBehavior = .none
+                return section
+            case .newFeature:
+                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.45)))
+                item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.45)), subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
                 section.orthogonalScrollingBehavior = .none

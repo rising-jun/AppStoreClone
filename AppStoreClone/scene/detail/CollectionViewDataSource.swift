@@ -9,10 +9,19 @@ import UIKit
 
 final class CollectionViewDataSource: NSObject {
     private var titleEntity: TitleEntity?
+    private var newFeatureEntity: NewFeatureEntity?
 }
 extension CollectionViewDataSource: UICollectionViewDataSource {
-    func setDetailDTO(_ titleEntity: TitleEntity?) {
+    func setTitleEntity(_ titleEntity: TitleEntity?) {
         self.titleEntity = titleEntity
+    }
+    
+    func setNewFeatureEntity(_ newFeatureEntity: NewFeatureEntity?) {
+        self.newFeatureEntity = newFeatureEntity
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        DetailSection.numberOfSection
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -20,6 +29,8 @@ extension CollectionViewDataSource: UICollectionViewDataSource {
         switch section {
         case .title:
             return TitleCell.cellCount
+        case .newFeature:
+            return NewFeatureCell.cellCount
         }
     }
     
@@ -33,15 +44,24 @@ extension CollectionViewDataSource: UICollectionViewDataSource {
             guard let imageData = titleEntity.imageData else { return cell }
             cell.configuration(imageData: imageData)
             return cell
+        case .newFeature:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NewFeatureCell.id, for: indexPath) as? NewFeatureCell else { return UICollectionViewCell() }
+            cell.configuration(with: newFeatureEntity)
+            return cell
         }
     }
 }
 
 enum DetailSection: Int {
     case title
+    case newFeature
 }
 extension DetailSection {
     var value: Int {
         return rawValue
     }
+    
+    static let numberOfSection: Int = {
+        return 2
+    }()
 }
