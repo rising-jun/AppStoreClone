@@ -51,6 +51,13 @@ final class NewFeatureCell: UICollectionViewCell {
         return label
     }()
     
+    let dividerLine: UIView = {
+        let line = UIView()
+        line.backgroundColor = .gray
+        line.translatesAutoresizingMaskIntoConstraints = false
+        return line
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         layout()
@@ -69,7 +76,7 @@ final class NewFeatureCell: UICollectionViewCell {
 }
 extension NewFeatureCell {
     private func layout() {
-        addSubviews(newVersionLabel, versionLabel, releaseDateLabel, noteLabel)
+        addSubviews(newVersionLabel, versionLabel, releaseDateLabel, noteLabel, dividerLine)
         NSLayoutConstraint.activate( [newVersionLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
                                       newVersionLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
                                       newVersionLabel.widthAnchor.constraint(equalToConstant: 150),
@@ -89,6 +96,11 @@ extension NewFeatureCell {
                                       noteLabel.topAnchor.constraint(equalTo: self.versionLabel.bottomAnchor, constant: 0),
                                       noteLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
                                       noteLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5)])
+        
+        NSLayoutConstraint.activate( [dividerLine.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -0.5),
+                                      dividerLine.widthAnchor.constraint(equalTo: self.widthAnchor),
+                                      dividerLine.heightAnchor.constraint(equalToConstant: 0.5),
+                                      dividerLine.leadingAnchor.constraint(equalTo: self.leadingAnchor)])
     }
     
     func configuration(with entity: NewFeatureEntity?) {

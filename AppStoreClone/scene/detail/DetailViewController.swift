@@ -20,13 +20,17 @@ final class DetailViewController: UIViewController {
         super.init(coder: coder)
     }
     
-    lazy var collectionView: UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         guard let compositionalLayout = CompositionalLayoutFactory.makeCompositionalLayout() else { return UICollectionView() }
         var collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout)
         collectionView.backgroundColor = .black
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(TitleCell.self, forCellWithReuseIdentifier: TitleCell.id)
         collectionView.register(NewFeatureCell.self, forCellWithReuseIdentifier: NewFeatureCell.id)
+        collectionView.register(PreviewCell.self, forCellWithReuseIdentifier: PreviewCell.id)
+        collectionView.register(PreviewHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: PreviewHeader.id)
+        collectionView.register(PreviewFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: PreviewFooter.id)
+        
         return collectionView
     }()
     
@@ -39,14 +43,18 @@ final class DetailViewController: UIViewController {
 extension DetailViewController {
     private func layout() {
         view.addSubview(collectionView)
-        NSLayoutConstraint.activate( [collectionView.widthAnchor.constraint(equalTo: view.widthAnchor),
-                                      collectionView.heightAnchor.constraint(equalTo: view.heightAnchor)])
+        NSLayoutConstraint.activate( [collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+                                      collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                                      collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                                      collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)])
     }
     
     private func attribute() {
         collectionView.dataSource = dataSource
         dataSource.setTitleEntity(viewModel.titleEntity)
         dataSource.setNewFeatureEntity(viewModel.newFeatureEntity)
+        dataSource.setPreviewEntity(viewModel.previewEntity)
+        collectionView.delegate = self
     }
     
     private func bind() {
@@ -56,32 +64,28 @@ extension DetailViewController {
                 self.collectionView.reloadItems(at: [IndexPath(item: 0, section: DetailSection.title.value)])
             }
         }
+        
+        viewModel.previewImageUpdated = { [weak self] item in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.dataSource.increasePreviewCount()
+                self.collectionView.insertItems(at: [IndexPath(item: item, section: DetailSection.preview.value)])
+            }
+        }
+        
+        viewModel.tappedPreviewImage = { [weak self] item in
+            guard let self = self else { return }
+            let detailPreviewController = DetailPreviewController()
+            detailPreviewController.viewModel.setPreviewState(DetailPreviewState(imageData: self.viewModel.previewEntity?.imageData, itemIndex: item))
+            detailPreviewController.modalPresentationStyle = .popover
+            DispatchQueue.main.async {
+                self.present(detailPreviewController, animated: true)
+            }
+        }
     }
 }
-
-enum CompositionalLayoutFactory {
-    static func makeCompositionalLayout() -> UICollectionViewCompositionalLayout? {
-        return UICollectionViewCompositionalLayout { (section, environ) -> NSCollectionLayoutSection? in
-            guard let section = DetailSection(rawValue: section) else { return nil }
-            switch section {
-            case .title:
-                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.45)))
-                item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.45)), subitems: [item])
-                let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
-                section.orthogonalScrollingBehavior = .none
-                return section
-            case .newFeature:
-                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.45)))
-                item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.45)), subitems: [item])
-                let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
-                section.orthogonalScrollingBehavior = .none
-                return section
-            }
-            
-        }
+extension DetailViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.collectionCellTapped(index: indexPath)
     }
 }

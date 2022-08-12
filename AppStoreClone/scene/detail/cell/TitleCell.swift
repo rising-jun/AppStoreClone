@@ -106,9 +106,10 @@ extension TitleCell {
                                       shareIcon.widthAnchor.constraint(equalToConstant: 30),
                                       shareIcon.heightAnchor.constraint(equalToConstant: 30)])
         
-        NSLayoutConstraint.activate( [dividerLine.topAnchor.constraint(equalTo: self.bottomAnchor),
+        NSLayoutConstraint.activate( [dividerLine.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -0.5),
                                       dividerLine.widthAnchor.constraint(equalTo: self.widthAnchor),
-                                      dividerLine.heightAnchor.constraint(equalToConstant: 0.5),])
+                                      dividerLine.heightAnchor.constraint(equalToConstant: 0.5),
+                                      dividerLine.leadingAnchor.constraint(equalTo: self.leadingAnchor)])
     }
     
     func configuration(with entity: TitleEntity) {

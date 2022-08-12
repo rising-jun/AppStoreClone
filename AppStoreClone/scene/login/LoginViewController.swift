@@ -81,7 +81,8 @@ extension LoginViewController {
     }
     
     @objc func checkButtonTapped(sender: Any) {
-        viewModel.checkButtonTapped(id: idTextField.text ?? "")
+        //viewModel.checkButtonTapped(id: idTextField.text ?? "")
+        viewModel.checkButtonTapped(id: "872469884")
     }
 }
 extension UIViewController {

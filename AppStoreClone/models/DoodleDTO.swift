@@ -68,6 +68,10 @@ struct DetailDTO: Codable {
     func convertNewFeatureEntity() -> NewFeatureEntity {
         return NewFeatureEntity(version: version, currentVersionDate: currentVersionReleaseDate, releaseNotes: releaseNotes)
     }
+    
+    func convertPreviewEntity() -> PreviewEntity {
+        return PreviewEntity(imageURLs: screenshotUrls)
+    }
 }
 
 
@@ -101,5 +105,22 @@ final class NewFeatureEntity {
     
     func setCurrentVersionDate(_ date: String) {
         self.currentVersionDate = "\(date) 전"
+    }
+}
+
+final class PreviewEntity {
+    let imageURLs: [String]
+    init(imageURLs: [String]) {
+        self.imageURLs = imageURLs
+    }
+    
+    private(set) var imageData: [Data] = []
+    func appendImage(data: Data) {
+        imageData.append(data)
+    }
+    
+    private(set) var imageIndex: Int = 0
+    func increaseImageIndex() {
+        imageIndex += 1
     }
 }

@@ -10,8 +10,10 @@ import UIKit
 final class CollectionViewDataSource: NSObject {
     private var titleEntity: TitleEntity?
     private var newFeatureEntity: NewFeatureEntity?
+    private var previewEntity: PreviewEntity?
+    private var previewItemCount = 0
 }
-extension CollectionViewDataSource: UICollectionViewDataSource {
+extension CollectionViewDataSource {
     func setTitleEntity(_ titleEntity: TitleEntity?) {
         self.titleEntity = titleEntity
     }
@@ -20,8 +22,34 @@ extension CollectionViewDataSource: UICollectionViewDataSource {
         self.newFeatureEntity = newFeatureEntity
     }
     
+    func setPreviewEntity(_ previewEntity: PreviewEntity?) {
+        self.previewEntity = previewEntity
+    }
+    
+    func increasePreviewCount() {
+        previewItemCount += 1
+    }
+}
+extension CollectionViewDataSource: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         DetailSection.numberOfSection
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let section = DetailSection(rawValue: indexPath.section) else { return UICollectionReusableView() }
+        switch section {
+        case .title:
+            return UICollectionReusableView()
+        case .newFeature:
+            return UICollectionReusableView()
+        case .preview:
+            if kind == UICollectionView.elementKindSectionHeader {
+                guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: PreviewHeader.id, for: indexPath) as? PreviewHeader else { return UICollectionReusableView() }
+                return header
+            }
+            guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: PreviewFooter.id, for: indexPath) as? PreviewFooter else { return UICollectionReusableView() }
+            return footer
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -31,6 +59,8 @@ extension CollectionViewDataSource: UICollectionViewDataSource {
             return TitleCell.cellCount
         case .newFeature:
             return NewFeatureCell.cellCount
+        case .preview:
+            return previewItemCount
         }
     }
     
@@ -48,6 +78,12 @@ extension CollectionViewDataSource: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NewFeatureCell.id, for: indexPath) as? NewFeatureCell else { return UICollectionViewCell() }
             cell.configuration(with: newFeatureEntity)
             return cell
+        case .preview:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PreviewCell.id, for: indexPath) as? PreviewCell else { return UICollectionViewCell() }
+            if let data = previewEntity?.imageData[indexPath.item] {
+                cell.setImage(data: data)
+            }
+            return cell
         }
     }
 }
@@ -55,13 +91,11 @@ extension CollectionViewDataSource: UICollectionViewDataSource {
 enum DetailSection: Int {
     case title
     case newFeature
+    case preview
 }
 extension DetailSection {
     var value: Int {
         return rawValue
     }
-    
-    static let numberOfSection: Int = {
-        return 2
-    }()
+    static let numberOfSection: Int = 3
 }

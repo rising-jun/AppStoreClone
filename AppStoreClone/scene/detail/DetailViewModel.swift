@@ -11,7 +11,7 @@ import OSLog
 final class DetailViewModel {
     private let imageManager = ImageManager()
     private let dateManager = DateManager()
-    
+    private let serialQueue = DispatchQueue.global()
     var titleImageFetched: (() -> ())?
     private(set) var titleEntity: TitleEntity? {
         didSet {
@@ -34,9 +34,42 @@ final class DetailViewModel {
             newFeatureEntity?.setCurrentVersionDate(dateGap)
         }
     }
+    var previewImageUpdated: ((Int) -> ())?
+    private(set) var previewEntity: PreviewEntity? {
+        didSet {
+            guard let urls = previewEntity?.imageURLs else { return }
+            for url in urls {
+                imageManager.fetchImage(from: url) { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let data):
+                        self.serialQueue.sync {
+                            self.previewEntity?.appendImage(data: data)
+                            self.previewImageUpdated?(self.previewEntity?.imageIndex ?? 0)
+                            self.previewEntity?.increaseImageIndex()
+                        }
+                    case .failure(let error):
+                        os_log(.error, log: .default, "%@", error as CVarArg)
+                    }
+                }
+            }
+        }
+    }
+    
+    var tappedPreviewImage: ((Int) -> ())?
+    func collectionCellTapped(index: IndexPath) {
+        guard let section = DetailSection(rawValue: index.section) else { return }
+        switch section {
+        case .title: return
+        case .newFeature: return
+        case .preview:
+            tappedPreviewImage?(index.item)
+        }
+    }
     
     func setDetailDTO(_ detailDTO: DetailDTO) {
         self.titleEntity = detailDTO.convertTitleEntity()
         self.newFeatureEntity = detailDTO.convertNewFeatureEntity()
+        self.previewEntity = detailDTO.convertPreviewEntity()
     }
 }
