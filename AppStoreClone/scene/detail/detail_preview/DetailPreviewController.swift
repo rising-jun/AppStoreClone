@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import OSLog
 
 final class DetailPreviewController: UIViewController {
     
@@ -44,6 +45,10 @@ final class DetailPreviewController: UIViewController {
         viewModel.viewDidLoad()
         layout()
         attribute()
+    }
+    
+    deinit {
+        os_log(.debug, log: .default, "%@", "DetailPreviewController deinit")
     }
 }
 extension DetailPreviewController {
