@@ -7,9 +7,9 @@
 
 import UIKit
 
-final class LoginViewController: UIViewController {
+final class SearchViewController: UIViewController {
     
-    private let viewModel = LoginViewModel()
+    private let viewModel = SearchViewModel()
     
     private var idTextField: UITextField = {
         let textField = UITextField()
@@ -41,7 +41,7 @@ final class LoginViewController: UIViewController {
         bind()
     }
 }
-extension LoginViewController {
+extension SearchViewController {
     private func attribute() {
         view.backgroundColor = .white
         checkButton.addTarget(self, action: #selector(checkButtonTapped), for: .touchUpInside)
