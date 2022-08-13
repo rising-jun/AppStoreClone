@@ -41,6 +41,9 @@ extension CollectionViewDataSource: UICollectionViewDataSource {
             return footer
         case .description:
             return UICollectionReusableView()
+        case .info:
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: InfoHeader.id, for: indexPath) as? InfoHeader else { return UICollectionReusableView() }
+            return header
         }
     }
     
@@ -55,6 +58,8 @@ extension CollectionViewDataSource: UICollectionViewDataSource {
             return previewItemCount
         case .description:
             return DescriptionCell.cellCount
+        case .info:
+            return InfoCell.cellCount
         }
     }
     
@@ -84,6 +89,23 @@ extension CollectionViewDataSource: UICollectionViewDataSource {
             guard let descriptionEntity = detailEntity?.getDescriptionEntityUsable() else { return UICollectionViewCell() }
             cell.configuration(with: descriptionEntity)
             return cell
+        case .info:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InfoCell.id, for: indexPath) as? InfoCell else { return UICollectionViewCell() }
+            guard let infoEntity = detailEntity?.getInfoEntityUsable() else { return cell }
+            guard let infoSeq = InfoSequence(rawValue: indexPath.item) else { return UICollectionViewCell() }
+            switch infoSeq {
+            case .provider:
+                cell.configuration(title: infoSeq.title, contents: infoEntity.getArtistName())
+            case .reviewRating:
+                cell.configuration(title: infoSeq.title, contents: infoEntity.getProcessedReviewRating())
+            case .appSize:
+                cell.configuration(title: infoSeq.title, contents: infoEntity.getProcessedAppSize())
+            case .category:
+                cell.configuration(title: infoSeq.title, contents: infoEntity.getCategory())
+            case .surpportDevice:
+                cell.configuration(title: infoSeq.title, contents: infoEntity.getSupportDevice())
+            }
+            return cell
         }
     }
 }
@@ -93,10 +115,11 @@ enum DetailSection: Int {
     case newFeature
     case preview
     case description
+    case info
 }
 extension DetailSection {
     var value: Int {
         return rawValue
     }
-    static let numberOfSection: Int = 4
+    static let numberOfSection: Int = 5
 }

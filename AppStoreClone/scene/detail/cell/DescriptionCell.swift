@@ -88,12 +88,12 @@ extension DescriptionCell {
                                      moreButton.heightAnchor.constraint(equalToConstant: 25)])
         
         NSLayoutConstraint.activate([sellerLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
-                                     sellerLabel.bottomAnchor.constraint(equalTo: developerLabel.topAnchor),
+                                     sellerLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20),
                                      sellerLabel.widthAnchor.constraint(equalToConstant: 120),
                                      sellerLabel.heightAnchor.constraint(equalToConstant: 25)])
         
         NSLayoutConstraint.activate([developerLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
-                                     developerLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -40),
+                                     developerLabel.topAnchor.constraint(equalTo: sellerLabel.bottomAnchor, constant: 5),
                                      developerLabel.widthAnchor.constraint(equalToConstant: 50),
                                      developerLabel.heightAnchor.constraint(equalToConstant: 25)])
         

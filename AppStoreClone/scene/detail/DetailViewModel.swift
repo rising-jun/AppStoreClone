@@ -11,6 +11,7 @@ import OSLog
 final class DetailViewModel {
     private let imageManager = ImageManager()
     private let dateManager = DateManager()
+    private let decimicalManager = DecimalManager()
     private let serialQueue = DispatchQueue.global()
     var titleImageFetched: (() -> ())?
     private(set) var detailEntity: DetailEntityUsable?
@@ -73,6 +74,16 @@ final class DetailViewModel {
         }
     }
     
+    private(set) var infoEntity: InfoEntityUsable? {
+        didSet {
+            guard let infoEntity = infoEntity else { return }
+            let processedAppSize = decimicalManager.convertAppSize(infoEntity.getFileSize())
+            infoEntity.setProcessedAppSize("\(processedAppSize)MB")
+            let processedReviewRating = decimicalManager.convertReview(infoEntity.getUserRating())
+            infoEntity.setProcessedReviewRating(processedReviewRating)
+        }
+    }
+    
     var tappedPreviewImage: ((Int) -> ())?
     func collectionCellTapped(index: IndexPath) {
         guard let section = DetailSection(rawValue: index.section) else { return }
@@ -82,6 +93,7 @@ final class DetailViewModel {
         case .preview:
             tappedPreviewImage?(index.item)
         case .description: return
+        case .info: return
         }
     }
     
@@ -91,13 +103,6 @@ final class DetailViewModel {
         self.newFeatureEntity = detailEntity.getNewFeatureEntityUsable()
         self.previewEntity = detailEntity.getPreviewEntityUsable()
         self.descriptionEntity = detailEntity.getDescriptionEntityUsable()
+        self.infoEntity = detailEntity.getInfoEntityUsable()
     }
-}
-
-extension String {
-
-    var numberOfLines: Int {
-        return self.components(separatedBy: "\n").count
-    }
-
 }

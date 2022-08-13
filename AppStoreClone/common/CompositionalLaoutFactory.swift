@@ -10,11 +10,11 @@ import UIKit
 final class CompositionalLayoutFactory {
     private(set) var descriptionHeight: NSCollectionLayoutDimension
     init() {
-        descriptionHeight = .fractionalHeight(0.55)
+        descriptionHeight = .estimated(230)
     }
     
     func setMoreDescriptionHeight(textCount: Int) {
-        descriptionHeight = .estimated(CGFloat(textCount) * 5)
+        descriptionHeight = .estimated(CGFloat(textCount) * 40)
     }
     
     func makeCompositionalLayout() -> UICollectionViewCompositionalLayout? {
@@ -56,6 +56,15 @@ final class CompositionalLayoutFactory {
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
                 section.orthogonalScrollingBehavior = .none
+                return section
+            case .info:
+                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.1)))
+                item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.4)), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+                section.boundarySupplementaryItems = [
+                    .init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(80)), elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)]
                 return section
             }
         }

@@ -32,6 +32,8 @@ final class DetailViewController: UIViewController {
         collectionView.register(PreviewHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: PreviewHeader.id)
         collectionView.register(PreviewFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: PreviewFooter.id)
         collectionView.register(DescriptionCell.self, forCellWithReuseIdentifier: DescriptionCell.id)
+        collectionView.register(InfoHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: InfoHeader.id)
+        collectionView.register(InfoCell.self, forCellWithReuseIdentifier: InfoCell.id)
         return collectionView
     }()
     

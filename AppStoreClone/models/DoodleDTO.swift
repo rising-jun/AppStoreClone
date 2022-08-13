@@ -67,7 +67,8 @@ final class DetailDTO: Codable {
     private(set) var screenImageIndex: Int = 0
     private(set) var expend: Bool = false
     private(set) var moreDescription: (() -> ())?
-    
+    private(set) var processedReviewRating: String?
+    private(set) var processedAppSize: String?
 }
 extension DetailDTO: DetailEntityUsable {
     func getTitleEntityUsable() -> TitleEntityUsable {
@@ -83,6 +84,10 @@ extension DetailDTO: DetailEntityUsable {
     }
     
     func getDescriptionEntityUsable() -> DescriptionEntityUsable {
+        return self
+    }
+    
+    func getInfoEntityUsable() -> InfoEntityUsable {
         return self
     }
 }
@@ -174,6 +179,43 @@ extension DetailDTO: DescriptionEntityUsable {
         expend = true
     }
 }
+extension DetailDTO: InfoEntityUsable {
+    func getArtistName() -> String {
+        return artistName
+    }
+    
+    func getSupportDevice() -> [String] {
+        return supportedDevices
+    }
+    
+    func getCategory() -> String {
+        return primaryGenreName
+    }
+    
+    func getFileSize() -> String {
+        return fileSizeBytes
+    }
+    
+    func getUserRating() -> String {
+        return "\(averageUserRating)"
+    }
+    
+    func setProcessedAppSize(_ appSize: String) {
+        self.processedAppSize = appSize
+    }
+    
+    func getProcessedAppSize() -> String? {
+        return processedAppSize
+    }
+    
+    func setProcessedReviewRating(_ rating: String) {
+        self.processedReviewRating = rating
+    }
+    
+    func getProcessedReviewRating() -> String? {
+        return processedReviewRating
+    }
+}
 
 protocol TitleEntityUsable {
     func getTitle() -> String
@@ -208,9 +250,22 @@ protocol DescriptionEntityUsable {
     func getMoreDescriptionAction() -> (() -> ())?
 }
 
-protocol DetailEntityUsable: TitleEntityUsable, NewFeatureEntityUsable, PreviewEntityUsable, DescriptionEntityUsable {
+protocol InfoEntityUsable {
+    func getArtistName() -> String
+    func getSupportDevice() -> [String]
+    func getCategory() -> String
+    func getFileSize() -> String
+    func getUserRating() -> String
+    func setProcessedAppSize(_ appSize: String)
+    func getProcessedAppSize() -> String?
+    func setProcessedReviewRating(_ rating: String)
+    func getProcessedReviewRating() -> String?
+}
+
+protocol DetailEntityUsable: TitleEntityUsable, NewFeatureEntityUsable, PreviewEntityUsable, DescriptionEntityUsable, InfoEntityUsable {
     func getTitleEntityUsable() -> TitleEntityUsable
     func getNewFeatureEntityUsable() -> NewFeatureEntityUsable
     func getPreviewEntityUsable() -> PreviewEntityUsable
     func getDescriptionEntityUsable() -> DescriptionEntityUsable
+    func getInfoEntityUsable() -> InfoEntityUsable
 }
