@@ -20,8 +20,9 @@ final class DetailViewController: UIViewController {
         super.init(coder: coder)
     }
     
+    private let compositionalLayoutFactory = CompositionalLayoutFactory()
     private lazy var collectionView: UICollectionView = {
-        guard let compositionalLayout = CompositionalLayoutFactory.makeCompositionalLayout() else { return UICollectionView() }
+        guard let compositionalLayout = compositionalLayoutFactory.makeCompositionalLayout() else { return UICollectionView() }
         var collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout)
         collectionView.backgroundColor = .black
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -30,7 +31,7 @@ final class DetailViewController: UIViewController {
         collectionView.register(PreviewCell.self, forCellWithReuseIdentifier: PreviewCell.id)
         collectionView.register(PreviewHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: PreviewHeader.id)
         collectionView.register(PreviewFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: PreviewFooter.id)
-        
+        collectionView.register(DescriptionCell.self, forCellWithReuseIdentifier: DescriptionCell.id)
         return collectionView
     }()
     
@@ -51,9 +52,7 @@ extension DetailViewController {
     
     private func attribute() {
         collectionView.dataSource = dataSource
-        dataSource.setTitleEntity(viewModel.titleEntity)
-        dataSource.setNewFeatureEntity(viewModel.newFeatureEntity)
-        dataSource.setPreviewEntity(viewModel.previewEntity)
+        dataSource.setDetailEntity(viewModel.detailEntity)
         collectionView.delegate = self
     }
     
@@ -76,11 +75,17 @@ extension DetailViewController {
         viewModel.tappedPreviewImage = { [weak self] item in
             guard let self = self else { return }
             let detailPreviewController = DetailPreviewController()
-            detailPreviewController.viewModel.setPreviewState(DetailPreviewState(imageData: self.viewModel.previewEntity?.imageData, itemIndex: item))
+            detailPreviewController.viewModel.setPreviewState(DetailPreviewState(imageData: self.viewModel.previewEntity?.getImageData(), itemIndex: item))
             detailPreviewController.modalPresentationStyle = .popover
             DispatchQueue.main.async {
                 self.present(detailPreviewController, animated: true)
             }
+        }
+        
+        viewModel.tappedDescriptioinMore = { [weak self] numberOfLines in
+            guard let self = self else { return }
+            self.compositionalLayoutFactory.setMoreDescriptionHeight(textCount: numberOfLines)
+            self.collectionView.reloadItems(at: [IndexPath(item: 0, section: DetailSection.description.value)])
         }
     }
 }

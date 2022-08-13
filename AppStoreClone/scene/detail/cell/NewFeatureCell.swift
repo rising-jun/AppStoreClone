@@ -10,6 +10,7 @@ import UIKit
 final class NewFeatureCell: UICollectionViewCell {
     static let id = String(describing: NewFeatureCell.self)
     static let cellCount = 1
+    
     private let newVersionLabel: UILabel = {
         let label = UILabel()
         label.textColor = .white
@@ -34,9 +35,7 @@ final class NewFeatureCell: UICollectionViewCell {
         label.textColor = .gray
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 2
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.textAlignment = .right
-        label.translatesAutoresizingMaskIntoConstraints = false
+        label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
@@ -45,9 +44,7 @@ final class NewFeatureCell: UICollectionViewCell {
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 2
-        label.font = UIFont.systemFont(ofSize: 14)
         label.adjustsFontSizeToFitWidth = true
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -103,14 +100,9 @@ extension NewFeatureCell {
                                       dividerLine.leadingAnchor.constraint(equalTo: self.leadingAnchor)])
     }
     
-    func configuration(with entity: NewFeatureEntity?) {
-        versionLabel.text = entity?.version
-        releaseDateLabel.text = entity?.currentVersionDate
-        let attrString = NSMutableAttributedString(string: entity?.releaseNotes ?? "")
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 12
-        attrString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attrString.length))
-        noteLabel.attributedText = attrString
-        noteLabel.adjustsFontSizeToFitWidth = true
+    func configuration(with entity: NewFeatureEntityUsable?) {
+        versionLabel.text = entity?.getVersion()
+        releaseDateLabel.text = entity?.getUpdatedDate()
+        noteLabel.text = entity?.getReleaseNotes()
     }
 }

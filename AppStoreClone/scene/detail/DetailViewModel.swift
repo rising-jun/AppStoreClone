@@ -13,13 +13,15 @@ final class DetailViewModel {
     private let dateManager = DateManager()
     private let serialQueue = DispatchQueue.global()
     var titleImageFetched: (() -> ())?
-    private(set) var titleEntity: TitleEntity? {
+    private(set) var detailEntity: DetailEntityUsable?
+    
+    private(set) var titleEntity: TitleEntityUsable? {
         didSet {
             guard let titleEntity = titleEntity else { return }
-            imageManager.fetchImage(from: titleEntity.imageURL) { result in
+            imageManager.fetchImage(from: titleEntity.getImageURL()) { result in
                 switch result {
                 case .success(let data):
-                    titleEntity.setImage(data: data)
+                    titleEntity.setTitleImage(data: data)
                     self.titleImageFetched?()
                 case .failure(let error):
                     os_log(.error, log: .default, "%@", error as CVarArg)
@@ -28,16 +30,19 @@ final class DetailViewModel {
         }
     }
     
-    private(set) var newFeatureEntity: NewFeatureEntity? {
+    private(set) var newFeatureEntity: NewFeatureEntityUsable? {
         didSet {
-            let dateGap = dateManager.findDateGap(date: newFeatureEntity?.currentVersionDate ?? "")
-            newFeatureEntity?.setCurrentVersionDate(dateGap)
+            guard let newFeatureEntity = newFeatureEntity else { return }
+            let dateGap = dateManager.findDateGap(date: newFeatureEntity.getCurrentVersionDate())
+            newFeatureEntity.setCurrentVersionDate(dateGap)
         }
     }
+    
     var previewImageUpdated: ((Int) -> ())?
-    private(set) var previewEntity: PreviewEntity? {
+    private(set) var previewEntity: PreviewEntityUsable? {
         didSet {
-            guard let urls = previewEntity?.imageURLs else { return }
+            guard let previewEntity = previewEntity else { return }
+            let urls = previewEntity.getImageURLs()
             for url in urls {
                 imageManager.fetchImage(from: url) { [weak self] result in
                     guard let self = self else { return }
@@ -45,13 +50,25 @@ final class DetailViewModel {
                     case .success(let data):
                         self.serialQueue.sync {
                             self.previewEntity?.appendImage(data: data)
-                            self.previewImageUpdated?(self.previewEntity?.imageIndex ?? 0)
+                            self.previewImageUpdated?(self.previewEntity?.getImageIndex() ?? 0)
                             self.previewEntity?.increaseImageIndex()
                         }
                     case .failure(let error):
                         os_log(.error, log: .default, "%@", error as CVarArg)
                     }
                 }
+            }
+        }
+    }
+    
+    var tappedDescriptioinMore: ((Int) -> ())?
+    private(set) var descriptionEntity: DescriptionEntityUsable? {
+        didSet {
+            descriptionEntity?.setMoreDescriptionAction { [weak self] in
+                guard let self = self else { return }
+                self.descriptionEntity?.expendDescription()
+                guard let descriptionLine = self.descriptionEntity?.getDescription().numberOfLines else { return }
+                self.tappedDescriptioinMore?(descriptionLine)
             }
         }
     }
@@ -64,12 +81,23 @@ final class DetailViewModel {
         case .newFeature: return
         case .preview:
             tappedPreviewImage?(index.item)
+        case .description: return
         }
     }
     
-    func setDetailDTO(_ detailDTO: DetailDTO) {
-        self.titleEntity = detailDTO.convertTitleEntity()
-        self.newFeatureEntity = detailDTO.convertNewFeatureEntity()
-        self.previewEntity = detailDTO.convertPreviewEntity()
+    func setDetailDTO(_ detailEntity: DetailEntityUsable) {
+        self.detailEntity = detailEntity
+        self.titleEntity = detailEntity.getTitleEntityUsable()
+        self.newFeatureEntity = detailEntity.getNewFeatureEntityUsable()
+        self.previewEntity = detailEntity.getPreviewEntityUsable()
+        self.descriptionEntity = detailEntity.getDescriptionEntityUsable()
     }
+}
+
+extension String {
+
+    var numberOfLines: Int {
+        return self.components(separatedBy: "\n").count
+    }
+
 }

@@ -8,22 +8,12 @@
 import UIKit
 
 final class CollectionViewDataSource: NSObject {
-    private var titleEntity: TitleEntity?
-    private var newFeatureEntity: NewFeatureEntity?
-    private var previewEntity: PreviewEntity?
+    private var detailEntity: DetailEntityUsable?
     private var previewItemCount = 0
 }
 extension CollectionViewDataSource {
-    func setTitleEntity(_ titleEntity: TitleEntity?) {
-        self.titleEntity = titleEntity
-    }
-    
-    func setNewFeatureEntity(_ newFeatureEntity: NewFeatureEntity?) {
-        self.newFeatureEntity = newFeatureEntity
-    }
-    
-    func setPreviewEntity(_ previewEntity: PreviewEntity?) {
-        self.previewEntity = previewEntity
+    func setDetailEntity(_ detailEntity: DetailEntityUsable?) {
+        self.detailEntity = detailEntity
     }
     
     func increasePreviewCount() {
@@ -49,6 +39,8 @@ extension CollectionViewDataSource: UICollectionViewDataSource {
             }
             guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: PreviewFooter.id, for: indexPath) as? PreviewFooter else { return UICollectionReusableView() }
             return footer
+        case .description:
+            return UICollectionReusableView()
         }
     }
     
@@ -61,28 +53,36 @@ extension CollectionViewDataSource: UICollectionViewDataSource {
             return NewFeatureCell.cellCount
         case .preview:
             return previewItemCount
+        case .description:
+            return DescriptionCell.cellCount
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let section = DetailSection(rawValue: indexPath.section) else { return UICollectionViewCell() }
-        guard let titleEntity = self.titleEntity else { return UICollectionViewCell() }
         switch section {
         case .title:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TitleCell.id, for: indexPath) as? TitleCell else { return UICollectionViewCell() }
+            guard let titleEntity = self.detailEntity?.getTitleEntityUsable() else { return UICollectionViewCell() }
             cell.configuration(with: titleEntity)
-            guard let imageData = titleEntity.imageData else { return cell }
+            guard let imageData = titleEntity.getTitleImage() else { return cell }
             cell.configuration(imageData: imageData)
             return cell
         case .newFeature:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NewFeatureCell.id, for: indexPath) as? NewFeatureCell else { return UICollectionViewCell() }
+            guard let newFeatureEntity = detailEntity?.getNewFeatureEntityUsable() else { return UICollectionViewCell() }
             cell.configuration(with: newFeatureEntity)
             return cell
         case .preview:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PreviewCell.id, for: indexPath) as? PreviewCell else { return UICollectionViewCell() }
-            if let data = previewEntity?.imageData[indexPath.item] {
-                cell.setImage(data: data)
-            }
+            guard let previewEntity = detailEntity?.getPreviewEntityUsable() else { return UICollectionViewCell() }
+            let data = previewEntity.getImageData()
+            cell.setImage(data: data[indexPath.item])
+            return cell
+        case .description:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DescriptionCell.id, for: indexPath) as? DescriptionCell else { return UICollectionViewCell() }
+            guard let descriptionEntity = detailEntity?.getDescriptionEntityUsable() else { return UICollectionViewCell() }
+            cell.configuration(with: descriptionEntity)
             return cell
         }
     }
@@ -92,10 +92,11 @@ enum DetailSection: Int {
     case title
     case newFeature
     case preview
+    case description
 }
 extension DetailSection {
     var value: Int {
         return rawValue
     }
-    static let numberOfSection: Int = 3
+    static let numberOfSection: Int = 4
 }

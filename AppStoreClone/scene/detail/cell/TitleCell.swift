@@ -10,6 +10,7 @@ import UIKit
 final class TitleCell: UICollectionViewCell {
     static let id = String(describing: TitleCell.self)
     static let cellCount = 1
+    
     let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 15
@@ -112,9 +113,9 @@ extension TitleCell {
                                       dividerLine.leadingAnchor.constraint(equalTo: self.leadingAnchor)])
     }
     
-    func configuration(with entity: TitleEntity) {
-        titleLabel.text = entity.title
-        subTitleLabel.text = entity.subTitle
+    func configuration(with entity: TitleEntityUsable) {
+        titleLabel.text = entity.getTitle()
+        subTitleLabel.text = entity.getSubTitle()
     }
     
     func configuration(imageData: Data) {

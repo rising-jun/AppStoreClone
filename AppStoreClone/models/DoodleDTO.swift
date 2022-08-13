@@ -11,7 +11,7 @@ struct DoodleDTO: Codable {
     let results: [DetailDTO]
 }
 
-struct DetailDTO: Codable {
+final class DetailDTO: Codable {
     let isGameCenterEnabled: Bool
     let supportedDevices: [String]
     let advisories, features: [String]
@@ -61,66 +61,156 @@ struct DetailDTO: Codable {
         case artistName, genres, price, version, wrapperType, userRatingCount
     }
     
-    func convertTitleEntity() -> TitleEntity {
-        return TitleEntity(title: trackName, subTitle: artistName, imageURL: artworkUrl512)
+    private(set) var titleImageData: Data?
+    private(set) var currentVersionDate: String?
+    private(set) var screenImageData: [Data] = []
+    private(set) var screenImageIndex: Int = 0
+    private(set) var expend: Bool = false
+    private(set) var moreDescription: (() -> ())?
+    
+}
+extension DetailDTO: DetailEntityUsable {
+    func getTitleEntityUsable() -> TitleEntityUsable {
+        return self
     }
     
-    func convertNewFeatureEntity() -> NewFeatureEntity {
-        return NewFeatureEntity(version: version, currentVersionDate: currentVersionReleaseDate, releaseNotes: releaseNotes)
+    func getNewFeatureEntityUsable() -> NewFeatureEntityUsable {
+        return self
     }
     
-    func convertPreviewEntity() -> PreviewEntity {
-        return PreviewEntity(imageURLs: screenshotUrls)
+    func getPreviewEntityUsable() -> PreviewEntityUsable {
+        return self
+    }
+    
+    func getDescriptionEntityUsable() -> DescriptionEntityUsable {
+        return self
     }
 }
-
-
-final class TitleEntity {
-    let title: String
-    let subTitle: String
-    let imageURL: String
-    private(set) var imageData: Data?
-    
-    func setImage(data: Data) {
-        imageData = data
+extension DetailDTO: TitleEntityUsable {
+    func getTitle() -> String {
+        return trackName
     }
     
-    init(title: String, subTitle: String, imageURL: String) {
-        self.title = title
-        self.subTitle = subTitle
-        self.imageURL = imageURL
+    func getSubTitle() -> String {
+        return artistName
+    }
+    
+    func getImageURL() -> String {
+        return artworkUrl512
+    }
+    
+    func setTitleImage(data: Data) {
+        titleImageData = data
+    }
+    
+    func getTitleImage() -> Data? {
+        return titleImageData
     }
 }
-
-final class NewFeatureEntity {
-    let version: String
-    private(set) var currentVersionDate: String
-    let releaseNotes: String
+extension DetailDTO: NewFeatureEntityUsable {
+    func getVersion() -> String {
+        return version
+    }
     
-    init(version: String, currentVersionDate: String, releaseNotes: String) {
-        self.version = "버전 \(version)"
-        self.currentVersionDate = currentVersionDate
-        self.releaseNotes = releaseNotes
+    func getCurrentVersionDate() -> String {
+        return currentVersionReleaseDate
+    }
+    
+    func getReleaseNotes() -> String {
+        return releaseNotes
     }
     
     func setCurrentVersionDate(_ date: String) {
-        self.currentVersionDate = "\(date) 전"
+        return self.currentVersionDate = "\(date) 전"
+    }
+    
+    func getUpdatedDate() -> String? {
+        return self.currentVersionDate
+    }
+}
+extension DetailDTO: PreviewEntityUsable {
+    func getImageURLs() -> [String] {
+        return screenshotUrls
+    }
+    
+    func getImageData() -> [Data] {
+        return screenImageData
+    }
+    
+    func getImageIndex() -> Int {
+        return screenImageIndex
+    }
+    
+    func appendImage(data: Data) {
+        screenImageData.append(data)
+    }
+    
+    func increaseImageIndex() {
+        screenImageIndex += 1
+    }
+}
+extension DetailDTO: DescriptionEntityUsable {
+    func setMoreDescriptionAction(action: @escaping () -> ()) {
+        moreDescription = action
+    }
+    
+    func getMoreDescriptionAction() -> (() -> ())? {
+        return moreDescription
+    }
+    
+    func isExpendDescription() -> Bool {
+        return expend
+    }
+    
+    func getDescription() -> String {
+        return resultDescription
+    }
+    
+    func getSellerName() -> String {
+        return sellerName
+    }
+    
+    func expendDescription() {
+        expend = true
     }
 }
 
-final class PreviewEntity {
-    let imageURLs: [String]
-    init(imageURLs: [String]) {
-        self.imageURLs = imageURLs
-    }
-    
-    private(set) var imageData: [Data] = []
-    func appendImage(data: Data) {
-        imageData.append(data)
-    }
-    
-    private(set) var imageIndex: Int = 0
-    func increaseImageIndex() {
-        imageIndex += 1
-    }
+protocol TitleEntityUsable {
+    func getTitle() -> String
+    func getSubTitle() -> String
+    func getImageURL() -> String
+    func getTitleImage() -> Data?
+    func setTitleImage(data: Data)
+}
+
+protocol NewFeatureEntityUsable {
+    func getVersion() -> String
+    func getCurrentVersionDate() -> String
+    func setCurrentVersionDate(_ date: String)
+    func getReleaseNotes() -> String
+    func getUpdatedDate() -> String?
+}
+
+protocol PreviewEntityUsable {
+    func getImageURLs() -> [String]
+    func getImageData() -> [Data]
+    func appendImage(data: Data)
+    func getImageIndex() -> Int
+    func increaseImageIndex()
+}
+
+protocol DescriptionEntityUsable {
+    func getDescription() -> String
+    func getSellerName() -> String
+    func expendDescription()
+    func isExpendDescription() -> Bool
+    func setMoreDescriptionAction(action: @escaping () -> ())
+    func getMoreDescriptionAction() -> (() -> ())?
+}
+
+protocol DetailEntityUsable: TitleEntityUsable, NewFeatureEntityUsable, PreviewEntityUsable, DescriptionEntityUsable {
+    func getTitleEntityUsable() -> TitleEntityUsable
+    func getNewFeatureEntityUsable() -> NewFeatureEntityUsable
+    func getPreviewEntityUsable() -> PreviewEntityUsable
+    func getDescriptionEntityUsable() -> DescriptionEntityUsable
 }

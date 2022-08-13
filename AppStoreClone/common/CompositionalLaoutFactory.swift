@@ -7,9 +7,19 @@
 
 import UIKit
 
-enum CompositionalLayoutFactory {
-    static func makeCompositionalLayout() -> UICollectionViewCompositionalLayout? {
-        return UICollectionViewCompositionalLayout { (section, environ) -> NSCollectionLayoutSection? in
+final class CompositionalLayoutFactory {
+    private(set) var descriptionHeight: NSCollectionLayoutDimension
+    init() {
+        descriptionHeight = .fractionalHeight(0.55)
+    }
+    
+    func setMoreDescriptionHeight(textCount: Int) {
+        descriptionHeight = .estimated(CGFloat(textCount) * 5)
+    }
+    
+    func makeCompositionalLayout() -> UICollectionViewCompositionalLayout? {
+        return UICollectionViewCompositionalLayout { [weak self] (section, environ) -> NSCollectionLayoutSection? in
+            guard let self = self else { return nil }
             guard let section = DetailSection(rawValue: section) else { return nil }
             switch section {
             case .title:
@@ -31,7 +41,7 @@ enum CompositionalLayoutFactory {
             case .preview:
                 let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
                 item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.7), heightDimension: .fractionalHeight(0.75)), subitems: [item])
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.75), heightDimension: .fractionalHeight(0.6)), subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
                 section.orthogonalScrollingBehavior = .groupPaging
@@ -39,11 +49,19 @@ enum CompositionalLayoutFactory {
                     .init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(80)), elementKind: UICollectionView.elementKindSectionHeader, alignment: .top),
                     .init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60)), elementKind: UICollectionView.elementKindSectionFooter, alignment: .bottom)]
                 return section
+            case .description:
+                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: self.descriptionHeight))
+                item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: self.descriptionHeight), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+                section.orthogonalScrollingBehavior = .none
+                return section
             }
         }
     }
     
-    static func makeDetailPreviewCompositionalLayout() -> UICollectionViewCompositionalLayout? {
+    func makeDetailPreviewCompositionalLayout() -> UICollectionViewCompositionalLayout? {
         return UICollectionViewCompositionalLayout { (section, environ) -> NSCollectionLayoutSection? in
             let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
             item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)

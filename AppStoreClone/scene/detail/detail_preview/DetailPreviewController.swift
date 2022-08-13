@@ -21,8 +21,9 @@ final class DetailPreviewController: UIViewController {
         return button
     }()
     
+    private let compositionalLayoutFactory = CompositionalLayoutFactory()
     private lazy var collectionView: UICollectionView = {
-        guard let compositionalLayout = CompositionalLayoutFactory.makeDetailPreviewCompositionalLayout() else { return UICollectionView() }
+        guard let compositionalLayout = compositionalLayoutFactory.makeDetailPreviewCompositionalLayout() else { return UICollectionView() }
         var collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout)
         collectionView.backgroundColor = .black
         collectionView.translatesAutoresizingMaskIntoConstraints = false
