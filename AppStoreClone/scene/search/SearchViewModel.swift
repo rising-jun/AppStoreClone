@@ -8,7 +8,7 @@
 import Foundation
 import OSLog
 
-final class LoginViewModel {
+final class SearchViewModel {
     private let repository = ServiceRepository(session: URLSession.shared)
     
     var fetchSuccess: ((DoodleDTO) -> Void)?
@@ -28,7 +28,7 @@ final class LoginViewModel {
         }
     }
 }
-extension LoginViewModel {
+extension SearchViewModel {
     func checkButtonTapped(id: String) {
         repository.requestAPI(api: AppStoreAPI.search(id: id), decodeType: DoodleDTO.self) { [weak self] result in
             guard let self = self else { return }

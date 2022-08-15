@@ -7,9 +7,9 @@
 
 import UIKit
 
-final class LoginViewController: UIViewController {
+final class SearchViewController: UIViewController {
     
-    private let viewModel = LoginViewModel()
+    private let viewModel = SearchViewModel()
     
     private var idTextField: UITextField = {
         let textField = UITextField()
@@ -34,8 +34,6 @@ final class LoginViewController: UIViewController {
         return button
     }()
     
-    private var toastView = ToastView()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         attribute()
@@ -43,7 +41,7 @@ final class LoginViewController: UIViewController {
         bind()
     }
 }
-extension LoginViewController {
+extension SearchViewController {
     private func attribute() {
         view.backgroundColor = .white
         checkButton.addTarget(self, action: #selector(checkButtonTapped), for: .touchUpInside)
@@ -64,14 +62,18 @@ extension LoginViewController {
     }
     
     private func bind() {
-        viewModel.fetchSuccess = { doodleDTO in
+        viewModel.fetchSuccess = { [weak self] doodleDTO in
+            guard let self = self else { return }
             DispatchQueue.main.async {
-                self.showToast(message: "찾았습니다.", font: UIFont.systemFont(ofSize: 20))
+                let detailViewController = DetailViewController()
+                guard let detailDTO = doodleDTO.results.first else { return }
+                detailViewController.viewModel.setDetailDTO(detailDTO)
+                detailViewController.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(detailViewController, animated: true)
             }
         }
         
-        viewModel.fetchFailed = { [weak self] in
-            guard let self = self else { return }
+        viewModel.fetchFailed = {
             DispatchQueue.main.async {
                 self.showToast(message: "검색결과가 없습니다.", font: UIFont.systemFont(ofSize: 20))
             }
@@ -79,29 +81,7 @@ extension LoginViewController {
     }
     
     @objc func checkButtonTapped(sender: Any) {
-        viewModel.checkButtonTapped(id: idTextField.text ?? "")
-    }
-}
-extension UIViewController {
-    func showToast(message : String, font: UIFont) {
-        let toastLabel: UILabel = {
-            let label = UILabel(frame: CGRect(x: self.view.frame.size.width/2 - 150, y: self.view.frame.size.height-100, width: view.frame.size.width - 100, height: 35))
-            label.backgroundColor = UIColor.black.withAlphaComponent(0.8)
-            label.textColor = UIColor.white
-            label.font = font
-            label.textAlignment = .center
-            label.text = message
-            label.alpha = 1.0
-            label.layer.cornerRadius = 10
-            label.clipsToBounds  =  true
-            label.adjustsFontSizeToFitWidth = true
-            return label
-        }()
-        self.view.addSubview(toastLabel)
-        UIView.animate(withDuration: 3.0, delay: 0.1, options: .curveEaseOut, animations: {
-            toastLabel.alpha = 0.0
-        }, completion: {(isCompleted) in
-            toastLabel.removeFromSuperview()
-        })
+        //viewModel.checkButtonTapped(id: idTextField.text ?? "")
+        viewModel.checkButtonTapped(id: "872469884")
     }
 }
