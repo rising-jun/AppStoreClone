@@ -10,11 +10,20 @@ import OSLog
 
 final class DetailViewModel {
     private let imageManager = ImageManager()
-    private let dateManager = DateManager()
-    private let stringManager = StringManager()
-    private let decimicalManager = DecimalManager()
+    private let dateManager: DateManagable
+    private let stringManager: StringManagable
+    private let decimicalManager: DecimalManagable
     private let serialQueue = DispatchQueue.global()
     var titleImageFetched: (() -> ())?
+    
+    init(dateManager: DateManagable,
+         stringManager: StringManagable,
+         decimicalManager: DecimalManagable) {
+        self.dateManager = dateManager
+        self.stringManager = stringManager
+        self.decimicalManager = decimicalManager
+    }
+    
     private(set) var detailEntity: DetailEntityUsable?
     
     private(set) var titleEntity: TitleEntityUsable? {
@@ -107,6 +116,9 @@ final class DetailViewModel {
         }
     }
     
+    
+}
+extension DetailViewModel: DetailViewModelType {
     func setDetailDTO(_ detailEntity: DetailEntityUsable) {
         self.detailEntity = detailEntity
         self.titleEntity = detailEntity.getTitleEntityUsable()
@@ -115,4 +127,27 @@ final class DetailViewModel {
         self.descriptionEntity = detailEntity.getDescriptionEntityUsable()
         self.infoEntity = detailEntity.getInfoEntityUsable()
     }
+}
+
+typealias DetailViewModelType = DetailViewModelInput & DetailViewModelOutput & DetailViewBinding
+protocol DetailViewModelInput {
+    func setDetailDTO(_ detailEntity: DetailEntityUsable)
+    func collectionCellTapped(index: IndexPath)
+}
+protocol DetailViewModelOutput {
+    var detailEntity: DetailEntityUsable? { get }
+    var titleEntity: TitleEntityUsable? { get }
+    var newFeatureEntity: NewFeatureEntityUsable? { get }
+    var previewEntity: PreviewEntityUsable? { get }
+    var descriptionEntity: DescriptionEntityUsable? { get }
+    var infoEntity: InfoEntityUsable? { get }
+    
+    
+}
+protocol DetailViewBinding {
+    var titleImageFetched: (() -> ())? { get set }
+    var previewImageUpdated: ((Int) -> ())? { get set }
+    var tappedDescriptioinMore: ((Int) -> ())? { get set }
+    var tappedSurpportDeviceMore: ((Int) -> ())? { get set }
+    var tappedPreviewImage: ((Int) -> ())? { get set }
 }

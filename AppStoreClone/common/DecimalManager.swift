@@ -7,8 +7,9 @@
 
 import Foundation
 
-struct DecimalManager {
-    func convertReview(_ review: String) -> String{
+struct DecimalManager { }
+extension DecimalManager: DecimalManagable {
+    func convertReview(_ review: String) -> String {
         let startIndex = review.index(review.startIndex, offsetBy: 0)
         let endIndex = review.index(review.startIndex, offsetBy: 3)
         return String(review[startIndex ..< endIndex])
@@ -21,4 +22,8 @@ struct DecimalManager {
         replaceAppSize.insert(".", at: appSize.index(appSize.startIndex, offsetBy: 3))
         return replaceAppSize
     }
+}
+protocol DecimalManagable {
+    func convertReview(_ review: String) -> String
+    func convertAppSize(_ appSize: String) -> String
 }

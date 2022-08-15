@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct StringManager {
+struct StringManager { }
+extension StringManager: StringManagable {
     func stringAppender(strings: [String]) -> String {
         var result = ""
         for string in strings {
@@ -15,4 +16,7 @@ struct StringManager {
         }
         return result
     }
+}
+protocol StringManagable {
+    func stringAppender(strings: [String]) -> String
 }

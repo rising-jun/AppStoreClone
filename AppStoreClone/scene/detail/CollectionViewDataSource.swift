@@ -109,17 +109,3 @@ extension CollectionViewDataSource: UICollectionViewDataSource {
         }
     }
 }
-
-enum DetailSection: Int {
-    case title
-    case newFeature
-    case preview
-    case description
-    case info
-}
-extension DetailSection {
-    var value: Int {
-        return rawValue
-    }
-    static let numberOfSection: Int = 5
-}
