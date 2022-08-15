@@ -9,12 +9,19 @@ import UIKit
 
 final class CompositionalLayoutFactory {
     private(set) var descriptionHeight: NSCollectionLayoutDimension
+    private(set) var supportDeviceHeight: CGFloat
+    
     init() {
         descriptionHeight = .estimated(230)
+        supportDeviceHeight = 40
     }
     
     func setMoreDescriptionHeight(textCount: Int) {
         descriptionHeight = .estimated(CGFloat(textCount) * 40)
+    }
+    
+    func setSupportDeviceHeight(textCount: Int) {
+        supportDeviceHeight = CGFloat((textCount * 30))
     }
     
     func makeCompositionalLayout() -> UICollectionViewCompositionalLayout? {
@@ -59,8 +66,11 @@ final class CompositionalLayoutFactory {
                 return section
             case .info:
                 let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.1)))
+                let expendItem = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(self.supportDeviceHeight)))
                 item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
-                let group = NSCollectionLayoutGroup.vertical(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.4)), subitems: [item])
+                expendItem.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+                let itemGroup = NSCollectionLayoutGroup.vertical(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.5)), subitem: item, count: 4)
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(300)), subitems: [itemGroup, expendItem])
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
                 section.boundarySupplementaryItems = [

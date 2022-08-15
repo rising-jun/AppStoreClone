@@ -11,6 +11,7 @@ import OSLog
 final class DetailViewModel {
     private let imageManager = ImageManager()
     private let dateManager = DateManager()
+    private let stringManager = StringManager()
     private let decimicalManager = DecimalManager()
     private let serialQueue = DispatchQueue.global()
     var titleImageFetched: (() -> ())?
@@ -49,7 +50,7 @@ final class DetailViewModel {
                     guard let self = self else { return }
                     switch result {
                     case .success(let data):
-                        self.serialQueue.sync {
+                        self.serialQueue.async {
                             self.previewEntity?.appendImage(data: data)
                             self.previewImageUpdated?(self.previewEntity?.getImageIndex() ?? 0)
                             self.previewEntity?.increaseImageIndex()
@@ -74,6 +75,7 @@ final class DetailViewModel {
         }
     }
     
+    var tappedSurpportDeviceMore: ((Int) -> ())?
     private(set) var infoEntity: InfoEntityUsable? {
         didSet {
             guard let infoEntity = infoEntity else { return }
@@ -81,6 +83,14 @@ final class DetailViewModel {
             infoEntity.setProcessedAppSize("\(processedAppSize)MB")
             let processedReviewRating = decimicalManager.convertReview(infoEntity.getUserRating())
             infoEntity.setProcessedReviewRating(processedReviewRating)
+            let allDevice = stringManager.stringAppender(strings: infoEntity.getSupportDevice())
+            infoEntity.setAllDevice(allDevice)
+            infoEntity.setMoreSupportDeviceAction { [weak self] in
+                guard let self = self else { return }
+                self.infoEntity?.expendSupportDevice()
+                guard let deviceKind = self.infoEntity?.getSupportDevice().count else { return }
+                self.tappedSurpportDeviceMore?(deviceKind)
+            }
         }
     }
     

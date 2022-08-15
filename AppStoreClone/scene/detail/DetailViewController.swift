@@ -89,6 +89,12 @@ extension DetailViewController {
             self.compositionalLayoutFactory.setMoreDescriptionHeight(textCount: numberOfLines)
             self.collectionView.reloadItems(at: [IndexPath(item: 0, section: DetailSection.description.value)])
         }
+        
+        viewModel.tappedSurpportDeviceMore = { [weak self] numberOfLines in
+            guard let self = self else { return }
+            self.compositionalLayoutFactory.setSupportDeviceHeight(textCount: numberOfLines)
+            self.collectionView.reloadItems(at: [IndexPath(item: InfoSequence.surpportDevice.value, section: DetailSection.info.value)])
+        }
     }
 }
 extension DetailViewController: UICollectionViewDelegate {

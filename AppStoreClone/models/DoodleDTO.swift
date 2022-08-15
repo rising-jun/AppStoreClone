@@ -65,10 +65,13 @@ final class DetailDTO: Codable {
     private(set) var currentVersionDate: String?
     private(set) var screenImageData: [Data] = []
     private(set) var screenImageIndex: Int = 0
-    private(set) var expend: Bool = false
+    private(set) var moreDescriptionExpend: Bool = false
     private(set) var moreDescription: (() -> ())?
     private(set) var processedReviewRating: String?
     private(set) var processedAppSize: String?
+    private(set) var moreSupportExpend: Bool = false
+    private(set) var moreSupportDevice: (() -> ())?
+    private(set) var allDevice: String = ""
 }
 extension DetailDTO: DetailEntityUsable {
     func getTitleEntityUsable() -> TitleEntityUsable {
@@ -164,7 +167,7 @@ extension DetailDTO: DescriptionEntityUsable {
     }
     
     func isExpendDescription() -> Bool {
-        return expend
+        return moreDescriptionExpend
     }
     
     func getDescription() -> String {
@@ -176,10 +179,34 @@ extension DetailDTO: DescriptionEntityUsable {
     }
     
     func expendDescription() {
-        expend = true
+        moreDescriptionExpend = true
     }
 }
 extension DetailDTO: InfoEntityUsable {
+    func setAllDevice(_ device: String) {
+        self.allDevice = device
+    }
+    
+    func getAllDevice() -> String {
+        return allDevice
+    }
+    
+    func expendSupportDevice() {
+        moreSupportExpend = true
+    }
+    
+    func setMoreSupportDeviceAction(action: @escaping () -> ()) {
+        self.moreSupportDevice = action
+    }
+    
+    func getMoreSupportDeviceAction() -> (() -> ())? {
+        return moreSupportDevice
+    }
+    
+    func isExpendSupportDevice() -> Bool {
+        return moreSupportExpend
+    }
+    
     func getArtistName() -> String {
         return artistName
     }
@@ -260,6 +287,12 @@ protocol InfoEntityUsable {
     func getProcessedAppSize() -> String?
     func setProcessedReviewRating(_ rating: String)
     func getProcessedReviewRating() -> String?
+    func isExpendSupportDevice() -> Bool
+    func expendSupportDevice()
+    func setMoreSupportDeviceAction(action: @escaping () -> ())
+    func getMoreSupportDeviceAction() -> (() -> ())?
+    func setAllDevice(_ device: String)
+    func getAllDevice() -> String
 }
 
 protocol DetailEntityUsable: TitleEntityUsable, NewFeatureEntityUsable, PreviewEntityUsable, DescriptionEntityUsable, InfoEntityUsable {

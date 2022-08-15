@@ -103,7 +103,7 @@ extension CollectionViewDataSource: UICollectionViewDataSource {
             case .category:
                 cell.configuration(title: infoSeq.title, contents: infoEntity.getCategory())
             case .surpportDevice:
-                cell.configuration(title: infoSeq.title, contents: infoEntity.getSupportDevice())
+                cell.configuration(title: infoSeq.title, contents: infoEntity.getAllDevice(),expend:  infoEntity.isExpendSupportDevice(), expendAction: infoEntity.getMoreSupportDeviceAction())
             }
             return cell
         }
