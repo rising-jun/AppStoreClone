@@ -66,10 +66,9 @@ final class InfoCell: UICollectionViewCell {
     override func prepareForReuse() {
         titleLabel.text = nil
         contentLabel.text = nil
-        contentLabel.removeConstraints(contentsConstraints)
-        contentLabel.removeConstraints(contentConstraints)
-        moreButton.removeConstraints(moreButtonConstraints)
         
+        addSubview(moreButton)
+        moreButton.removeConstraints(moreButtonConstraints)
     }
 }
 extension InfoCell {
@@ -86,12 +85,12 @@ extension InfoCell {
                                contentLabel.heightAnchor.constraint(equalToConstant: 30)]
         
         moreButtonConstraints = [moreButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
-                                 moreButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 5),
-                                 moreButton.widthAnchor.constraint(equalToConstant: 25),
-                                 moreButton.heightAnchor.constraint(equalToConstant: 25)]
+                                 moreButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+                                 moreButton.widthAnchor.constraint(equalToConstant: 20),
+                                 moreButton.heightAnchor.constraint(equalToConstant: 20)]
         
         titleConstraints = [titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
-                            titleLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+                            titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 5),
                             titleLabel.widthAnchor.constraint(equalToConstant: 80),
                             titleLabel.heightAnchor.constraint(equalToConstant: 30)]
         
@@ -121,38 +120,41 @@ extension InfoCell {
         titleLabel.text = titleText
         contentLabel.text = contentsText
         self.expendAction = expendAction
-        setContentsLayout()
-        
+
         if expend {
             setExpendLayout()
+        } else {
+            setContentsLayout()
         }
     }
     
     private func setContentLayout() {
         moreButton.isHidden = true
         NSLayoutConstraint.activate(contentConstraints)
+        self.layoutIfNeeded()
     }
     
     private func setContentsLayout() {
         moreButton.isHidden = false
-        NSLayoutConstraint.activate(contentsConstraints)
         NSLayoutConstraint.activate(moreButtonConstraints)
+        NSLayoutConstraint.activate(contentsConstraints)
+        self.layoutIfNeeded()
     }
     
     private func setExpendLayout() {
-        contentLabel.removeConstraints(contentsConstraints)
-        moreButton.removeFromSuperview()
-        titleLabel.removeConstraints(titleConstraints)
-        titleLabel.removeFromSuperview()
         contentLabel.numberOfLines = 0
-        
-        NSLayoutConstraint.activate([
-            contentLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
-            contentLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10),
-            contentLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
-            contentLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 5)])
-        
+        moreButton.removeConstraints(moreButtonConstraints)
+        moreButton.removeFromSuperview()
         contentLabel.font = UIFont.systemFont(ofSize: 14)
+        UIView.animate(withDuration: 0.2) {
+            self.contentLabel.removeConstraints(self.contentsConstraints)
+            self.contentLabel.removeConstraints(self.contentConstraints)
+            let expendContentsConstraints = [self.contentLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
+                                             self.contentLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10),
+                                             self.contentLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+                                             self.contentLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 5)]
+            NSLayoutConstraint.activate(expendContentsConstraints)
+        }
         self.layoutIfNeeded()
     }
 }
