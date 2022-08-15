@@ -90,7 +90,6 @@ extension SearchViewController {
     }
     
     @objc func checkButtonTapped(sender: Any) {
-        //viewModel.checkButtonTapped(id: idTextField.text ?? "")
-        viewModel.checkButtonTapped(id: "872469884")
+        viewModel.checkButtonTapped(id: idTextField.text ?? "")
     }
 }
