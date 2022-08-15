@@ -7,11 +7,12 @@
 
 import Foundation
 
-struct DateManager {
+struct DateManager{
     private let yearIndex = 0
     private let monthIndex = 1
     private let dayIndex = 2
-    
+}
+extension DateManager: DateManagable  {
     func findDateGap(date: String) -> String {
         let startIndex = date.index(date.startIndex, offsetBy: 0)
         let endIndex = date.index(date.startIndex, offsetBy: 10)
@@ -34,4 +35,7 @@ struct DateManager {
         }
         return ""
     }
+}
+protocol DateManagable {
+    func findDateGap(date: String) -> String
 }

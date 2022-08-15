@@ -9,7 +9,17 @@ import UIKit
 
 final class SearchViewController: UIViewController {
     
-    private let viewModel = SearchViewModel()
+    private var viewModel: SearchViewModelType
+    init(dependency: SearchDependency) {
+        viewModel = dependency.searchViewModel
+        super.init(nibName: nil, bundle: nil)
+        bind(detailDependencyInject: dependency.detailDependency)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private var idTextField: UITextField = {
         let textField = UITextField()
@@ -38,7 +48,6 @@ final class SearchViewController: UIViewController {
         super.viewDidLoad()
         attribute()
         layout()
-        bind()
     }
 }
 extension SearchViewController {
@@ -61,13 +70,13 @@ extension SearchViewController {
                                       checkButton.heightAnchor.constraint(equalToConstant: 50)])
     }
     
-    private func bind() {
+    private func bind(detailDependencyInject: DetailDependencyInjectable) {
         viewModel.fetchSuccess = { [weak self] doodleDTO in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                let detailViewController = DetailViewController()
+                let detailViewController = DetailViewController(dependency: detailDependencyInject.injectDetailDependency())
                 guard let detailDTO = doodleDTO.results.first else { return }
-                detailViewController.viewModel.setDetailDTO(detailDTO)
+                detailViewController.setDetailEntity(detailDTO)
                 detailViewController.modalPresentationStyle = .fullScreen
                 self.navigationController?.pushViewController(detailViewController, animated: true)
             }

@@ -8,16 +8,18 @@
 import UIKit
 
 final class DetailViewController: UIViewController {
-    let viewModel = DetailViewModel()
+    private var viewModel: DetailViewModelType
     private let dataSource = CollectionViewDataSource()
     
-    init() {
+    init(dependency: DetailDependency) {
+        viewModel = dependency.detailViewModel
         super.init(nibName: nil, bundle: nil)
         bind()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
     }
     
     private let compositionalLayoutFactory = CompositionalLayoutFactory()
@@ -44,6 +46,10 @@ final class DetailViewController: UIViewController {
     }
 }
 extension DetailViewController {
+    func setDetailEntity(_ entity: DetailEntityUsable) {
+        viewModel.setDetailDTO(entity)
+    }
+    
     private func layout() {
         view.addSubview(collectionView)
         NSLayoutConstraint.activate( [collectionView.topAnchor.constraint(equalTo: view.topAnchor),

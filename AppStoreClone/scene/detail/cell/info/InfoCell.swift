@@ -156,31 +156,3 @@ extension InfoCell {
         self.layoutIfNeeded()
     }
 }
-
-enum InfoSequence: Int {
-    case provider
-    case reviewRating
-    case appSize
-    case category
-    case surpportDevice
-}
-extension InfoSequence {
-    var title: String {
-        switch self {
-        case .provider:
-            return "제공"
-        case .reviewRating:
-            return "평점"
-        case .appSize:
-            return "크기"
-        case .category:
-            return "카테고리"
-        case .surpportDevice:
-            return "호환성"
-        }
-    }
-    
-    var value: Int {
-        return self.rawValue
-    }
-}

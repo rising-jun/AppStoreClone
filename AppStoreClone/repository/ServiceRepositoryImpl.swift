@@ -7,12 +7,13 @@
 
 import Foundation
 
-struct ServiceRepository {
+struct ServiceRepositoryImpl {
     private let session: URLSession
     init(session: URLSession) {
         self.session = session
     }
-    
+}
+extension ServiceRepositoryImpl: ServiceRepository {
     func requestAPI<T: Decodable>(api: BaseAPI, decodeType: T.Type,completion: @escaping(Result<T ,APIError>) -> Void) {
         guard let url = api.url else {
             return completion(.failure(.invalidURL))
@@ -53,16 +54,7 @@ struct ServiceRepository {
         return decodeEntity
     }
 }
-enum APIError: String, Error {
-    case invalidURL = "유효하지 않은 URL."
-    case notConnect = "연결되지 않음."
-    case httpResponse = "HTTP Response 에러"
-    case httpURLResponse = "URLResponse 에러"
-    case nilData = "데이터 없음"
-    case decode = "디코딩 에러"
-}
-extension APIError: CustomStringConvertible {
-    var description: String {
-        return rawValue
-    }
+
+protocol ServiceRepository {
+    func requestAPI<T: Decodable>(api: BaseAPI, decodeType: T.Type,completion: @escaping(Result<T ,APIError>) -> Void)
 }
