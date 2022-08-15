@@ -10,7 +10,7 @@ import Foundation
 final class DependencyFactory { }
 extension DependencyFactory: DependencyInjectable {
     func injectDetailDependency() -> DetailDependency {
-        return DetailDependency(detailViewModel: DetailViewModel(dateManager: DateManager(), stringManager: StringManager(), decimicalManager: DecimalManager()))
+        return DetailDependency(detailViewModel: DetailViewModel(imageManager: ImageManager(), dateManager: DateManager(), stringManager: StringManager(), decimicalManager: DecimalManager()))
     }
     
     func injectSearchDependency() -> SearchDependency {

@@ -7,7 +7,8 @@
 
 import Foundation
 
-final class ImageManager {
+final class ImageManager { }
+extension ImageManager: ImageManagable {
     func fetchImage(from url: String, completion: @escaping (Result<Data, APIError>) -> Void) {
         guard let url = URL(string: url) else { return }
         URLSession.shared.dataTask(with: url) { data, response, error in
@@ -29,4 +30,7 @@ final class ImageManager {
             completion(.success(data))
         }.resume()
     }
+}
+protocol ImageManagable {
+    func fetchImage(from url: String, completion: @escaping (Result<Data, APIError>) -> Void)
 }

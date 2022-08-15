@@ -9,16 +9,18 @@ import Foundation
 import OSLog
 
 final class DetailViewModel {
-    private let imageManager = ImageManager()
+    private let imageManager: ImageManagable
     private let dateManager: DateManagable
     private let stringManager: StringManagable
     private let decimicalManager: DecimalManagable
     private let serialQueue = DispatchQueue.global()
     var titleImageFetched: (() -> ())?
     
-    init(dateManager: DateManagable,
+    init(imageManager: ImageManagable,
+         dateManager: DateManagable,
          stringManager: StringManagable,
          decimicalManager: DecimalManagable) {
+        self.imageManager = imageManager
         self.dateManager = dateManager
         self.stringManager = stringManager
         self.decimicalManager = decimicalManager
