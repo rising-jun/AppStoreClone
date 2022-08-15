@@ -68,7 +68,7 @@ final class InfoCell: UICollectionViewCell {
         contentLabel.text = nil
         
         addSubview(moreButton)
-        moreButton.removeConstraints(moreButtonConstraints)
+        //moreButton.removeConstraints(moreButtonConstraints)
     }
 }
 extension InfoCell {
@@ -85,7 +85,7 @@ extension InfoCell {
                                contentLabel.heightAnchor.constraint(equalToConstant: 30)]
         
         moreButtonConstraints = [moreButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
-                                 moreButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+                                 moreButton.centerYAnchor.constraint(equalTo: self.contentLabel.centerYAnchor),
                                  moreButton.widthAnchor.constraint(equalToConstant: 20),
                                  moreButton.heightAnchor.constraint(equalToConstant: 20)]
         
@@ -120,12 +120,8 @@ extension InfoCell {
         titleLabel.text = titleText
         contentLabel.text = contentsText
         self.expendAction = expendAction
-
-        if expend {
-            setExpendLayout()
-        } else {
-            setContentsLayout()
-        }
+        
+        expend ? setExpendLayout() : setContentsLayout()
     }
     
     private func setContentLayout() {
@@ -136,9 +132,11 @@ extension InfoCell {
     
     private func setContentsLayout() {
         moreButton.isHidden = false
-        NSLayoutConstraint.activate(moreButtonConstraints)
-        NSLayoutConstraint.activate(contentsConstraints)
+        NSLayoutConstraint.activate(self.moreButtonConstraints)
+        NSLayoutConstraint.activate(self.contentsConstraints)
         self.layoutIfNeeded()
+        
+        
     }
     
     private func setExpendLayout() {
